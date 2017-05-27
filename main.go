@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"image"
 	"os"
-	"os/exec"
-	"syscall"
 	"image/color"
 	"github.com/fogleman/gg"
 	"github.com/disintegration/imaging"
@@ -29,19 +27,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	binary, lookErr := exec.LookPath("open")
-	if lookErr != nil {
-		panic(lookErr)
-	}
-
-	args := []string{"open", EnlargeAndLabelImage(pixels, width, height)}
-	env := os.Environ()
-
-	execErr := syscall.Exec(binary, args, env)
-	if execErr != nil {
-		panic(execErr)
-	}
-
+	EnlargeAndLabelImage(pixels, width, height)
 }
 
 func EnlargeAndLabelImage(pixels [][]Pixel, width int, height int) string {
@@ -52,10 +38,13 @@ func EnlargeAndLabelImage(pixels [][]Pixel, width int, height int) string {
 	lineMask := image.NewRGBA(image.Rect(0, 0, max_x, max_y))
 	textMask := gg.NewContext(max_x, max_y)
 
+	/*
+	Uncomment and load your desired font if you want
+
 	err := textMask.LoadFontFace("/Users/kevinhoogerwerf/Library/Fonts/Roboto-Black.ttf", 18)
 	if (err != nil ) {
 		panic(err)
-	}
+	}*/
 
 	for row := 0; row < len(pixels); row++ {
 		thickenedRow := row % EveryNthGuideIsThickened == EveryNthGuideIsThickened - 1
